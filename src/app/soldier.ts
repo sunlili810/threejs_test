@@ -1,9 +1,9 @@
 import Stats from 'stats.js';
 import * as THREE from 'three/build/three.module.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { AnimationAction } from 'three/src/animation/AnimationAction';
-import { HemisphereLight,PlaneGeometry,Scene, PerspectiveCamera, WebGLRenderer, PlaneBufferGeometry, Mesh, MeshBasicMaterial, DoubleSide, GridHelper, AmbientLight, AnimationMixer, Clock, Raycaster, Vector2, Object3D } from 'three';
+//import { AnimationAction } from 'three/src/animation/AnimationAction';
+import { HemisphereLight, PlaneGeometry, Scene, PerspectiveCamera, WebGLRenderer, PlaneBufferGeometry, Mesh, MeshBasicMaterial, DoubleSide, GridHelper, AmbientLight, AnimationMixer, Clock, Raycaster, Vector2, Object3D } from 'three';
 
 export class Soldier {
   private scene: Scene;
@@ -12,13 +12,13 @@ export class Soldier {
   private renderer: WebGLRenderer;
   private stats: Stats;
   private gltfLoader: GLTFLoader;
-  private walkAction: AnimationAction;
+  private walkAction: any;
   private orbitControls: OrbitControls;
   private animationMixer: AnimationMixer;
   // 动画是否暂停
   private paused: boolean = false;
-  private HemisphereLight: HemisphereLight
-  private skeleton
+  //private HemisphereLight: HemisphereLight;
+  private skeleton;
 
   constructor() {
     this.scene = new Scene();
@@ -28,7 +28,7 @@ export class Soldier {
     this.gltfLoader = new GLTFLoader();
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
     this.animationMixer = new AnimationMixer(this.scene);
-    
+    this.walkAction= null;
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
@@ -84,9 +84,9 @@ export class Soldier {
       model.name = 'Soldier';
       this.scene.add( model );
 
-      model.traverse( function ( object ) { 
+      model.traverse( function ( object ) {
 //console.log(object);
-if ( object.isMesh ) object.castShadow = true;
+//if ( object.isMesh ) object.castShadow = true;
 
       } );
 
@@ -100,7 +100,7 @@ if ( object.isMesh ) object.castShadow = true;
 
       this.orbitControls.target.set(0, 1, 0);
 
-      const animationClip = gltf.animations.find(animationClip => animationClip.name === 'Walk');
+      const animationClip:any = gltf.animations.find(animationClip => animationClip.name === 'Walk');
       this.walkAction = this.animationMixer.clipAction(animationClip);
       this.walkAction.play();
     });
@@ -117,18 +117,18 @@ if ( object.isMesh ) object.castShadow = true;
       // 鼠标点击对应的物体（所有鼠标映射到的物体，包括被遮挡的）
       const intersects =  raycaster.intersectObjects(this.scene.children, true);
 
-      if (intersects.length > 0) {//点击显示自定义div层 
+      if (intersects.length > 0) {//点击显示自定义div层
         var point=intersects[0].point;
-        const tempDom = document.getElementById("info");
+        const tempDom:any = document.getElementById('info');
         tempDom.style.left=this.transPosition(point).x + 'px';
         tempDom.style.top=this.transPosition(point).y + 'px';
-       
+
       }
 
       // 过滤网格和地面
       const intersect = intersects.filter(intersect => !(intersect.object instanceof GridHelper) && intersect.object.name !== 'plane')[0];
 
-       
+
 
 
       if(intersect && this.isClickSoldier(intersect.object)) {
@@ -167,7 +167,7 @@ if ( object.isMesh ) object.castShadow = true;
     }
   }
 
- 
+
 
   private render() {
     // 更新动画
